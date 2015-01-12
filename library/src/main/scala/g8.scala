@@ -214,11 +214,15 @@ object G8Helpers {
       _ == propertiesLoc
     }
 
-    val parametersEither = propertiesFiles.headOption.map{ f =>
-      val props = readProps(new FileInputStream(f))
+    val parametersEither = Right(propertiesFiles.headOption.map{ f =>
+ /*     val props = readProps(new FileInputStream(f))
       val transformed = transformProps(props)
       transformed.right.map { _.map { case (k, v) => (k, DefaultValueF(v)) } }
-    }.getOrElse(Right(UnresolvedProperties.empty))
+    }.getOrElse(Right(UnresolvedProperties.empty))*/
+       val props = readProps(new FileInputStream(f))
+       val lookedUp = Ls.lookup(props).right.toOption.getOrElse(props)
+       lookedUp.map{ case (k, v) => (k, DefaultValueF(v)) }
+     }.getOrElse(UnresolvedProperties.empty))
 
     val g8templates = tmpls.filter(!_.isDirectory)
 
